@@ -27,40 +27,13 @@ const downloadPlugin = () => ({
   }
 });
 
-export default defineConfig(({ mode, command }) => {
+export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '');
-  const isBuild = command === 'build';
   return {
     base: './',
     plugins: [
       react(),
       tailwindcss(),
-      ...(isBuild ? [viteSingleFile()] : []),
-      ...(isBuild ? [VitePWA({
-        registerType: 'autoUpdate',
-        manifest: {
-          name: '圖面公差解析系統',
-          short_name: '公差解析',
-          description: 'AI 驅動的工程圖面公差解析工具',
-          theme_color: '#e2e8f0',
-          background_color: '#f8fafc',
-          display: 'standalone',
-          icons: [
-            {
-              src: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📐</text></svg>',
-              sizes: '192x192',
-              type: 'image/svg+xml',
-              purpose: 'any maskable'
-            },
-            {
-              src: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📐</text></svg>',
-              sizes: '512x512',
-              type: 'image/svg+xml',
-              purpose: 'any maskable'
-            }
-          ]
-        }
-      })] : []),
       downloadPlugin()
     ],
     define: {
