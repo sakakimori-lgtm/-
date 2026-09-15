@@ -27,14 +27,16 @@ const downloadPlugin = () => ({
   }
 });
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, '.', '');
+  const isBuild = command === 'build';
   return {
+    base: './',
     plugins: [
       react(),
       tailwindcss(),
-      viteSingleFile(),
-      VitePWA({
+      ...(isBuild ? [viteSingleFile()] : []),
+      ...(isBuild ? [VitePWA({
         registerType: 'autoUpdate',
         manifest: {
           name: '圖面公差解析系統',
@@ -58,7 +60,7 @@ export default defineConfig(({ mode }) => {
             }
           ]
         }
-      }),
+      })] : []),
       downloadPlugin()
     ],
     define: {
