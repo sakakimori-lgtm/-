@@ -100,6 +100,7 @@ const Badge = ({ type, children }: { type: 'critical'|'warn'|'ok'|'info', childr
 
 export default function App() {
   const [apiKey, setApiKey] = useState(localStorage.getItem('gemini_api_key') || '');
+  const [selectedModel, setSelectedModel] = useState(localStorage.getItem('gemini_model') || 'gemini-3.1-pro-preview');
   const [showSettings, setShowSettings] = useState(false);
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [activeIdx, setActiveIdx] = useState<number>(-1);
@@ -310,7 +311,7 @@ export default function App() {
 {"type": "類型 (例如: 表面粗糙度、焊接符號、一般註解、警告)", "description": "具體說明內容 (例如: Ra 3.2, 塗裝要求等)", "spec": "相關規格代碼 (若無則留空)"}`;
 
         const response = await ai.models.generateContent({
-          model: 'gemini-2.5-pro',
+          model: selectedModel,
           contents: [
             {
               role: 'user',
@@ -379,7 +380,7 @@ export default function App() {
       console.error(err);
       const errMsg = err?.message || String(err) || '';
       if (errMsg.includes('429') || errMsg.includes('RESOURCE_EXHAUSTED') || errMsg.includes('quota')) {
-        setError('API 額度已耗盡 (Quota Exceeded)。如果是免費額度限制，請等待額度重置後再試。');
+        setError('API 額度已耗盡 (Quota Exceeded)。這通常是因為您使用的 Gemini API Key 在免費方案下，對這個實驗性模型 (gemini-3.1-pro-preview) 的存取受到嚴格限制。如果您是剛申請的免費金鑰，目前可能無法從外部網頁呼叫此模型，請稍後再試，或更換付費方案。');
       } else {
         setError('自動標註擷取時發生錯誤：' + errMsg);
       }
@@ -554,7 +555,7 @@ export default function App() {
       const base64Data = f.dataUrl.split(',')[1];
       
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-pro',
+        model: selectedModel,
         contents: [
           {
             inlineData: {
@@ -612,7 +613,7 @@ export default function App() {
       console.error(err);
       const errMsg = err?.message || String(err) || '';
       if (errMsg.includes('429') || errMsg.includes('RESOURCE_EXHAUSTED') || errMsg.includes('quota')) {
-        setError('API 額度已耗盡 (Quota Exceeded)。如果是免費額度限制，請等待額度重置後再試。');
+        setError('API 額度已耗盡 (Quota Exceeded)。這通常是因為您使用的 Gemini API Key 在免費方案下，對這個實驗性模型 (gemini-3.1-pro-preview) 的存取受到嚴格限制。如果您是剛申請的免費金鑰，目前可能無法從外部網頁呼叫此模型，請稍後再試，或更換付費方案。');
       } else {
         setError(errMsg || '解析失敗');
       }
@@ -1684,6 +1685,26 @@ export default function App() {
                 </div>
                 <p className="text-xs text-text-muted mt-2">
                   您的 API 金鑰僅會儲存於本地瀏覽器中，不會傳送至任何第三方伺服器，確保您的資料安全。
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-text-main mb-1">AI 模型選擇 (Model)</label>
+                <select 
+                  value={selectedModel}
+                  onChange={(e) => {
+                    setSelectedModel(e.target.value);
+                    localStorage.setItem('gemini_model', e.target.value);
+                  }}
+                  className="w-full bg-bg-main border border-border-main rounded py-2 px-3 text-sm text-text-main focus:outline-none focus:border-accent"
+                >
+                  <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview (最強，需付費 API 方案)</option>
+                  <option value="gemini-2.5-pro">gemini-2.5-pro (推薦，優異推理能力)</option>
+                  <option value="gemini-2.5-flash">gemini-2.5-flash (推薦，速度快，免費額度高)</option>
+                  <option value="gemini-2.0-flash">gemini-2.0-flash (穩定，免費額度高)</option>
+                </select>
+                <p className="text-xs text-text-muted mt-2">
+                  如果您看到「API 額度已耗盡」的錯誤，請切換至 flash 結尾的模型（免費額度較高）。
                 </p>
               </div>
             </div>
