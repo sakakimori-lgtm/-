@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { GoogleGenAI } from '@google/genai';
 import { UploadedFile, HistoryRecord, ParsedResult, CriticalItem } from './types';
-import { PlusCircle, X, Play, Copy, Download, AlertTriangle, CheckCircle2, FileImage, Sliders, MousePointer2, Trash2, Edit2, ZoomIn, ZoomOut, Maximize, FileSpreadsheet } from 'lucide-react';
+import { PlusCircle, X, Play, Copy, Download, AlertTriangle, CheckCircle2, FileImage, Sliders, MousePointer2, Trash2, Edit2, ZoomIn, ZoomOut, Maximize, FileSpreadsheet, Settings, Key } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { jsonrepair } from 'jsonrepair';
@@ -99,6 +99,8 @@ const Badge = ({ type, children }: { type: 'critical'|'warn'|'ok'|'info', childr
 };
 
 export default function App() {
+  const [apiKey, setApiKey] = useState(localStorage.getItem('gemini_api_key') || '');
+  const [showSettings, setShowSettings] = useState(false);
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [activeIdx, setActiveIdx] = useState<number>(-1);
   const [mode, setMode] = useState<string>('full');
@@ -284,7 +286,11 @@ export default function App() {
 
       const fileObj = files.find(f => f.name === activeResult.fileName);
       if (fileObj && fileObj.dataUrl) {
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        if (!apiKey) {
+          setError("未設定 API Key，無法進行智慧辨識。請點選右上角設定圖示輸入金鑰。");
+          return;
+        }
+        const ai = new GoogleGenAI({ apiKey });
         const base64Data = fileObj.dataUrl.split(',')[1];
         
         const prompt = mode === 'dim' 
@@ -537,8 +543,14 @@ export default function App() {
 
     const userPrompt = modes[mode] + (notes ? '\\n\\n額外要求：' + notes : '');
 
+    if (!apiKey) {
+      setError("未設定 API Key，無法進行分析。請點選右上角設定圖示輸入您的 Gemini API Key。");
+      setIsAnalyzing(false);
+      return;
+    }
+
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = new GoogleGenAI({ apiKey });
       const base64Data = f.dataUrl.split(',')[1];
       
       const response = await ai.models.generateContent({
@@ -1355,6 +1367,13 @@ export default function App() {
             <span className="font-mono text-xs text-text-muted tracking-wider">SYSTEM ONLINE</span>
           </div>
           <span className="font-mono text-xs text-text-dark tracking-wider">{currentTime}</span>
+          <button 
+            onClick={() => setShowSettings(true)} 
+            className="flex items-center justify-center w-8 h-8 rounded border border-border-main hover:border-accent hover:text-accent transition-colors text-text-muted"
+            title="設定 API 金鑰"
+          >
+            <Settings size={16} />
+          </button>
         </div>
       </header>
 
@@ -1628,6 +1647,54 @@ export default function App() {
                   儲存
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Settings Modal */}
+      {showSettings && (
+        <div className="fixed inset-0 bg-[#000]/60 backdrop-blur-sm z-[100] flex items-center justify-center">
+          <div className="bg-bg-panel border border-border-main rounded w-full max-w-md shadow-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-accent font-bold font-mono tracking-widest text-lg flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                設定
+              </h3>
+              <button onClick={() => setShowSettings(false)} className="text-text-muted hover:text-white transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-text-main mb-1">Google Gemini API Key</label>
+                <div className="relative">
+                  <Key className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+                  <input 
+                    type="password"
+                    value={apiKey}
+                    onChange={(e) => {
+                      setApiKey(e.target.value);
+                      localStorage.setItem('gemini_api_key', e.target.value);
+                    }}
+                    placeholder="AIzaSy..."
+                    className="w-full bg-bg-main border border-border-main rounded py-2 pl-9 pr-3 text-sm text-text-main focus:outline-none focus:border-accent"
+                  />
+                </div>
+                <p className="text-xs text-text-muted mt-2">
+                  您的 API 金鑰僅會儲存於本地瀏覽器中，不會傳送至任何第三方伺服器，確保您的資料安全。
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button 
+                onClick={() => setShowSettings(false)}
+                className="px-4 py-2 bg-accent text-white rounded hover:bg-accent/80 transition-colors text-sm font-medium"
+              >
+                完成
+              </button>
             </div>
           </div>
         </div>
