@@ -380,7 +380,7 @@ export default function App() {
       console.error(err);
       const errMsg = err?.message || String(err) || '';
       if (errMsg.includes('429') || errMsg.includes('RESOURCE_EXHAUSTED') || errMsg.includes('quota')) {
-        setError('API 額度已耗盡 (Quota Exceeded)。這通常是因為您使用的 Gemini API Key 在免費方案下，對這個實驗性模型 (gemini-3.1-pro-preview) 的存取受到嚴格限制。如果您是剛申請的免費金鑰，目前可能無法從外部網頁呼叫此模型，請稍後再試，或更換付費方案。');
+        setError(`API 額度已耗盡 (Quota Exceeded)。這通常是因為您使用的 Gemini API Key 在免費方案下，對所選模型 (${selectedModel}) 的存取受到嚴格限制。如果您是剛申請的免費金鑰，目前可能無法從外部網頁呼叫此模型，請稍後再試、更換付費方案，或點擊右上角設定 ⚙️ 切換為 Flash 版本的模型。`);
       } else if (errMsg.includes('404') || errMsg.includes('no longer available')) {
         setError('您選擇的模型目前無法使用 (已下線或無權限存取)。請點擊右上角設定 ⚙️，將模型切換為更新的版本 (例如: gemini-3.6-flash)。');
       } else {
@@ -615,7 +615,7 @@ export default function App() {
       console.error(err);
       const errMsg = err?.message || String(err) || '';
       if (errMsg.includes('429') || errMsg.includes('RESOURCE_EXHAUSTED') || errMsg.includes('quota')) {
-        setError('API 額度已耗盡 (Quota Exceeded)。這通常是因為您使用的 Gemini API Key 在免費方案下，對這個實驗性模型 (gemini-3.1-pro-preview) 的存取受到嚴格限制。如果您是剛申請的免費金鑰，目前可能無法從外部網頁呼叫此模型，請稍後再試，或更換付費方案。');
+        setError(`API 額度已耗盡 (Quota Exceeded)。這通常是因為您使用的 Gemini API Key 在免費方案下，對所選模型 (${selectedModel}) 的存取受到嚴格限制。如果您是剛申請的免費金鑰，目前可能無法從外部網頁呼叫此模型，請稍後再試、更換付費方案，或點擊右上角設定 ⚙️ 切換為 Flash 版本的模型。`);
       } else if (errMsg.includes('404') || errMsg.includes('no longer available')) {
         setError('您選擇的模型目前無法使用 (已下線或無權限存取)。請點擊右上角設定 ⚙️，將模型切換為更新的版本 (例如: gemini-3.6-flash)。');
       } else {
