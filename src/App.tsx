@@ -100,7 +100,7 @@ const Badge = ({ type, children }: { type: 'critical'|'warn'|'ok'|'info', childr
 
 export default function App() {
   const [apiKey, setApiKey] = useState(localStorage.getItem('gemini_api_key') || '');
-  const [selectedModel, setSelectedModel] = useState(localStorage.getItem('gemini_model') || 'gemini-3.1-pro-preview');
+  const [selectedModel, setSelectedModel] = useState('gemini-3.6-flash');
   const [showSettings, setShowSettings] = useState(false);
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [activeIdx, setActiveIdx] = useState<number>(-1);
@@ -1702,14 +1702,10 @@ export default function App() {
                   }}
                   className="w-full bg-bg-main border border-border-main rounded py-2 px-3 text-sm text-text-main focus:outline-none focus:border-accent"
                 >
-                  <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview (最強，需付費 API 方案)</option>
-                  <option value="gemini-3.6-pro">gemini-3.6-pro (最新 Pro 模型)</option>
                   <option value="gemini-3.6-flash">gemini-3.6-flash (最新 Flash，速度快，免費額度高)</option>
-                  <option value="gemini-2.5-pro">gemini-2.5-pro (推薦，優異推理能力)</option>
-                  <option value="gemini-2.5-flash">gemini-2.5-flash (推薦，速度快，免費額度高)</option>
                 </select>
                 <p className="text-xs text-text-muted mt-2">
-                  如果您看到「API 額度已耗盡」的錯誤，請切換至 flash 結尾的模型（免費額度較高）。
+                  目前已鎖定使用具備高額免費存取次數的 gemini-3.6-flash 模型。
                 </p>
               </div>
             </div>
