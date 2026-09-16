@@ -310,7 +310,7 @@ export default function App() {
 {"type": "類型 (例如: 表面粗糙度、焊接符號、一般註解、警告)", "description": "具體說明內容 (例如: Ra 3.2, 塗裝要求等)", "spec": "相關規格代碼 (若無則留空)"}`;
 
         const response = await ai.models.generateContent({
-          model: 'gemini-3.1-pro-preview',
+          model: 'gemini-2.5-pro',
           contents: [
             {
               role: 'user',
@@ -554,7 +554,7 @@ export default function App() {
       const base64Data = f.dataUrl.split(',')[1];
       
       const response = await ai.models.generateContent({
-        model: 'gemini-3.1-pro-preview',
+        model: 'gemini-2.5-pro',
         contents: [
           {
             inlineData: {
