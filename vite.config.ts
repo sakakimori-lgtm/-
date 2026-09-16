@@ -28,6 +28,7 @@ const downloadPlugin = () => ({
 });
 
 export default defineConfig(({ mode }) => {
+  // Trigger GitHub Actions redeploy
   const env = loadEnv(mode, '.', '');
   return {
     base: './',
