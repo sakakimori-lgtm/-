@@ -28,7 +28,7 @@ const downloadPlugin = () => ({
 });
 
 export default defineConfig(({ mode }) => {
-  // Trigger GitHub Actions redeploy
+  // Trigger GitHub Actions redeploy for process polyfill
   const env = loadEnv(mode, '.', '');
   return {
     base: './',

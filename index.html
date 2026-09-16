@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>工程圖面解析系統 · Engineering Drawing Analyzer</title>
+    <script>
+      window.process = {
+        env: { NODE_ENV: 'production' },
+        versions: { node: '20' },
+        platform: 'browser',
+        nextTick: function(cb) { setTimeout(cb, 0); },
+        emit: function() { return false; },
+        on: function() {},
+        removeListener: function() {},
+      };
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
